@@ -37,7 +37,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="py-4 shadow bg-white text-gray-900 dark:bg-gray-800 dark:text-white">
+    <header className="py-4 shadow bg-white text-gray-900">
       <Container>
         {/* Top Section: Project Name + Logout Button */}
         <div className="flex items-center justify-between">
@@ -83,7 +83,7 @@ export default function Header() {
                 <li key={item.name}>
                   <button
                     onClick={() => navigate(item.path)}
-                    className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    className="hover:text-blue-600 transition-colors"
                   >
                     {item.name}
                   </button>
