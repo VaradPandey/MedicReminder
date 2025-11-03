@@ -10,14 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-
-CORS(
-    app,
-    origins=["https://medic-reminder-two.vercel.app"],
-    supports_credentials=True,
-    methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
-)
+CORS(app, resources={r"/*": {"origins": ["https://medic-reminder-two.vercel.app", "https://medicreminder-ml.up.railway.app","https://medicreminder-production-0fb9.up.railway.app"]}}, supports_credentials=True)
 
 github_api_key = os.getenv("GITHUB_API_KEY")
 
@@ -71,4 +64,5 @@ def extract():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port=5000
+    app.run(host='0.0.0.0',port=port)
