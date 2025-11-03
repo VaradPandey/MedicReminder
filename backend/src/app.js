@@ -11,34 +11,36 @@ const app = express();
 
 //setup inbuilt middlewares and imported ones
 // Configure CORS. Allow a comma-separated list of origins via CORS_ORIGIN.
-// If CORS_ORIGIN is not set in production we reflect the request origin so
-// the browser gets an explicit Access-Control-Allow-Origin header (needed
-// when `withCredentials: true` is used from the frontend).
+// If CORS_ORIGIN is not set we allow and reflect the incoming origin so the
+// browser gets an explicit Access-Control-Allow-Origin header (required when
+// `withCredentials: true` is used from the frontend).
 const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",")
       .map((o) => o.trim())
       .filter(Boolean)
   : [];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // allow requests with no origin (like mobile apps or curl)
-      if (!origin) return callback(null, true);
+const corsOptions = {
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
 
-      // if allowedOrigins is empty, reflect the request origin (allow all)
-      if (allowedOrigins.length === 0) return callback(null, true);
+    // if allowedOrigins is empty, allow all origins by reflecting the origin
+    if (allowedOrigins.length === 0) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        return callback(null, true);
-      }
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
 
-      // Not allowed by CORS
-      return callback(new Error("Origin not allowed by CORS"));
-    },
-    credentials: true,
-  })
-);
+    // Not allowed by CORS - respond without allowing the origin
+    return callback(new Error("Origin not allowed by CORS"));
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+// Ensure preflight requests also use the same CORS options
+app.options("*", cors(corsOptions));
 app.use(
   express.json({
     limit: "16kb",
