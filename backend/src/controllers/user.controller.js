@@ -31,9 +31,10 @@ const login = async (req, res) => {
   }
   const token = await user.setUser();
   res.cookie("accessToken", token, {
-    httpOnly: true,
-    secure: false,
-    maxAge: 3600000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV==="production",
+      sameSite: process.env.NODE_ENV==="production"?"None":"Lax",
+      maxAge: 24*60*60*1000
   });
   // sanitize user before sending to client
   const safeUser = user.toObject ? user.toObject() : user;
@@ -66,7 +67,11 @@ const getCurrentUser = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  res.clearCookie("accessToken");
+  res.clearCookie("accessToken",{
+        httpOnly: true,
+        secure: process.env.NODE_ENV==="production",
+        sameSite: process.env.NODE_ENV==="production"?"None":"Lax",
+  });
   res.json({ status: 200, message: "User logged out successfully" });
 };
 

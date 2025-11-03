@@ -1,4 +1,4 @@
-# LifeAura AI – SANKALP
+# MedicReminder
 
 * **Deployed Link:** [life-aura.vercel.app](https://life-aura.vercel.app)
 

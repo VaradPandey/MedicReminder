@@ -12,7 +12,7 @@ const app = express();
 //setup inbuilt middlewares and imported ones
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.NODE_ENV==="production"?process.env.CORS_ORIGIN:"*",
     credentials: true,
   })
 );

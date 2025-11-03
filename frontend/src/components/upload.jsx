@@ -62,7 +62,7 @@ export default function Upload({
       const form = new FormData();
       form.append("image", selectedFile);
 
-      const res = await fetch("http://localhost:5000/extract", {
+      const res = await fetch("https://lifeaura-ml.onrender.com/extract", {
         method: "POST",
         body: form,
       });
