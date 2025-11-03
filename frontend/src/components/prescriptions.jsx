@@ -307,7 +307,7 @@ export default function Prescriptions({ extracted }) {
                       };
                       navigate("/schedule", { state: { prefill } });
                     }}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-gray-500 rounded-lg text-sm"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm"
                   >
                     Create Schedule
                   </button>
