@@ -172,7 +172,7 @@ export default function Scheduler({ extracted = null }) {
             htmlFor="chatId"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            To get Chat ID for Notifications, visit to <a href="t.me/seeprojBot" className="text-blue-600 hover:underline">this bot</a>
+            To get Chat ID for Notifications, visit to <a href="http://t.me/MedicineReminderMeBot" className="text-blue-600 hover:underline">this bot</a>
             and start the bot, then go to userinfobot and ask for your chat ID.
           </label>
           <div className="relative">
