@@ -73,19 +73,19 @@ export default function Prescriptions({ extracted }) {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 text-white transition-colors">
+    <div className="max-w-6xl mx-auto p-6 text-gray-500 transition-colors">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">
+        <h1 className="text-3xl font-bold text-gray-500 mb-2">
           Prescription Details
         </h1>
-        <p className="text-white text-opacity-80">
+        <p className="text-gray-500 text-opacity-80">
           View detailed prescription information and medication details
         </p>
       </div>
 
       {/* Actions */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6 dark:bg-gray-800 dark:border-gray-700 transition-colors">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6 transition-colors">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -94,7 +94,7 @@ export default function Prescriptions({ extracted }) {
           >
             Refresh
           </button>
-          <div className="text-sm text-white text-opacity-80">
+          <div className="text-sm text-gray-500 text-opacity-80">
             Showing {prescriptions.length} prescriptions
           </div>
         </div>
@@ -102,15 +102,15 @@ export default function Prescriptions({ extracted }) {
 
       {/* Prescriptions List */}
       {loading ? (
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm dark:bg-gray-800 transition-colors">
+        <div className="text-center py-12 bg-white rounded-lg shadow-sm transition-colors">
           Loading...
         </div>
       ) : error ? (
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm text-red-600 dark:bg-gray-800 transition-colors">
+        <div className="text-center py-12 bg-white rounded-lg shadow-sm text-red-600 transition-colors">
           {error}
         </div>
       ) : prescriptions.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm dark:bg-gray-800 transition-colors">
+        <div className="text-center py-12 bg-white rounded-lg shadow-sm transition-colors">
           <svg
             className="mx-auto h-12 w-12 text-gray-400 mb-4"
             fill="none"
@@ -124,10 +124,10 @@ export default function Prescriptions({ extracted }) {
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             ></path>
           </svg>
-          <h3 className="text-lg font-medium text-white mb-2">
+          <h3 className="text-lg font-medium text-gray-500 mb-2">
             No prescriptions found
           </h3>
-          <p className="text-white text-opacity-80">
+          <p className="text-gray-500 text-opacity-80">
             No prescriptions match the selected filter.
           </p>
         </div>
@@ -136,24 +136,24 @@ export default function Prescriptions({ extracted }) {
           {prescriptions.map((prescription) => (
             <div
               key={prescription.id}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700 transition-colors"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-colors"
               onClick={() => handleSelectPrescription(prescription)}
             >
               {/* Prescription Header */}
-              <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 dark:bg-gray-700/50 dark:border-gray-700 transition-colors">
+              <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-semibold text-gray-500">
                       {prescription.prescriptionNumber}
                     </h3>
-                    <p className="text-sm text-white text-opacity-80">
+                    <p className="text-sm text-gray-500 text-opacity-80">
                       Issued on {formatDate(prescription.dateIssued)}
                     </p>
                   </div>
                   <span
                     className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
                       prescription.status
-                    )} dark:border-gray-600`}
+                    )}`}
                   >
                     {prescription.status}
                   </span>
@@ -183,8 +183,8 @@ export default function Prescriptions({ extracted }) {
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="font-medium text-white">Name:</span>
-                        <span className="text-white">
+                        <span className="font-medium text-gray-500">Name:</span>
+                        <span className="text-gray-500">
                           {prescription.patientName}
                         </span>
                       </div>
@@ -211,8 +211,8 @@ export default function Prescriptions({ extracted }) {
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="font-medium text-white">Doctor:</span>
-                        <span className="text-white">
+                        <span className="font-medium text-gray-500">Doctor:</span>
+                        <span className="text-gray-500">
                           {prescription.doctorName}
                         </span>
                       </div>
@@ -222,7 +222,7 @@ export default function Prescriptions({ extracted }) {
 
                 {/* Medications */}
                 <div className="mt-6">
-                  <h4 className="text-lg font-medium text-white mb-4 flex items-center">
+                  <h4 className="text-lg font-medium text-gray-500 mb-4 flex items-center">
                     <svg
                       className="h-5 w-5 mr-2 text-purple-600"
                       fill="none"
@@ -243,46 +243,46 @@ export default function Prescriptions({ extracted }) {
                       (medication, index) => (
                         <div
                           key={index}
-                          className="border border-gray-200 rounded-lg p-4 bg-purple-50 dark:bg-gray-700/50 dark:border-gray-600 transition-colors"
+                          className="border border-gray-200 rounded-lg p-4 bg-purple-50 transition-colors"
                         >
                           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                             <div>
-                              <span className="font-medium text-white text-sm">
+                              <span className="font-medium text-gray-500 text-sm">
                                 Medicine:
                               </span>
-                              <p className="text-white font-semibold">
+                              <p className="text-gray-500 font-semibold">
                                 {medication.name}
                               </p>
                             </div>
                             <div>
-                              <span className="font-medium text-white text-sm">
+                              <span className="font-medium text-gray-500 text-sm">
                                 Dosage:
                               </span>
-                              <p className="text-white">{medication.dosage}</p>
+                              <p className="text-gray-500">{medication.dosage}</p>
                             </div>
                             <div>
-                              <span className="font-medium text-white text-sm">
+                              <span className="font-medium text-gray-500 text-sm">
                                 Frequency:
                               </span>
-                              <p className="text-white">
+                              <p className="text-gray-500">
                                 {medication.frequency}
                               </p>
                             </div>
                             <div>
-                              <span className="font-medium text-white text-sm">
+                              <span className="font-medium text-gray-500 text-sm">
                                 Duration:
                               </span>
-                              <p className="text-white">
+                              <p className="text-gray-500">
                                 {medication.duration}
                               </p>
                             </div>
                           </div>
                           {medication.instructions && (
-                            <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
-                              <span className="font-medium text-white text-sm">
+                            <div className="mt-3 pt-3 border-t border-gray-300">
+                              <span className="font-medium text-gray-500 text-sm">
                                 Instructions:
                               </span>
-                              <p className="text-white italic">
+                              <p className="text-gray-500 italic">
                                 {medication.instructions}
                               </p>
                             </div>
@@ -307,7 +307,7 @@ export default function Prescriptions({ extracted }) {
                       };
                       navigate("/schedule", { state: { prefill } });
                     }}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-gray-500 rounded-lg text-sm"
                   >
                     Create Schedule
                   </button>

@@ -151,7 +151,7 @@ export default function Upload({
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800 dark:text-gray-100 transition-colors">
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg ">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           Prescription Scanner
