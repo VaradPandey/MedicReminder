@@ -154,49 +154,41 @@ export default function Scheduler({ extracted = null }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 text-gray-900 transition-colors">
+    <div className="max-w-4xl mx-auto p-6 text-gray-100 bg-gray-900 transition-colors min-h-screen">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-gray-100 mb-2">
           Medicine Scheduler
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-400">
           Set up medication reminders and notifications
         </p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 transition-colors">
+      <div className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-6 transition-colors">
         {/* Chat ID Input */}
         <div className="mb-6">
           <label
             htmlFor="chatId"
-            className="block text-sm font-medium text-blue-600 mb-2"
+            className="block text-sm font-medium text-gray-200 mb-2"
           >
-            To get Chat ID for Notifications, visit to <a href="http://t.me/MedicineReminderMeBot" className="text-blue-900 hover:underline">this bot</a>
+            To get Chat ID for Notifications, visit{" "}
+            <a
+              href="http://t.me/MedicineReminderMeBot"
+              className="text-blue-400 hover:underline"
+              target="_blank"
+            >
+              this bot
+            </a>{" "}
             and start the bot, then go to userinfobot and ask for your chat ID.
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              {/* <svg
-                className="h-5 w-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                ></path>
-              </svg> */}
-            </div>
             <input
               type="text"
               id="chatId"
               value={chatId}
               onChange={(e) => setChatId(e.target.value)}
-              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="block w-full px-3 py-3 border border-gray-600 rounded-lg bg-gray-900 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="919876543210"
             />
           </div>
@@ -205,7 +197,7 @@ export default function Scheduler({ extracted = null }) {
         {/* Medicines Section */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-gray-100">
               Medicine Schedule
             </h2>
             <button
@@ -234,16 +226,16 @@ export default function Scheduler({ extracted = null }) {
             {medicines.map((medicine, index) => (
               <div
                 key={medicine.id}
-                className="border border-gray-200 rounded-lg p-4 bg-gray-50 transition-colors"
+                className="border border-gray-700 rounded-lg p-4 bg-gray-900 transition-colors"
               >
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-medium text-gray-900">
+                  <h3 className="font-medium text-gray-100">
                     Medicine {index + 1}
                   </h3>
                   {medicines.length > 1 && (
                     <button
                       onClick={() => removeMedicine(medicine.id)}
-                      className="text-red-600 hover:text-red-800 transition-colors"
+                      className="text-red-500 hover:text-red-400 transition-colors"
                     >
                       <svg
                         className="h-5 w-5"
@@ -265,7 +257,7 @@ export default function Scheduler({ extracted = null }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Medicine Name */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       Medicine Name
                     </label>
                     <input
@@ -274,14 +266,14 @@ export default function Scheduler({ extracted = null }) {
                       onChange={(e) =>
                         updateMedicine(medicine.id, "name", e.target.value)
                       }
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="block w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-900 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="e.g., Amoxicillin"
                     />
                   </div>
 
                   {/* Dosage */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       Dosage
                     </label>
                     <input
@@ -290,14 +282,14 @@ export default function Scheduler({ extracted = null }) {
                       onChange={(e) =>
                         updateMedicine(medicine.id, "dosage", e.target.value)
                       }
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="block w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-900 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="e.g., 500mg"
                     />
                   </div>
 
                   {/* Time */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       Time
                     </label>
                     <input
@@ -306,13 +298,13 @@ export default function Scheduler({ extracted = null }) {
                       onChange={(e) =>
                         updateMedicine(medicine.id, "time", e.target.value)
                       }
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="block w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-900 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
                   {/* Duration */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       Duration
                     </label>
                     <input
@@ -321,7 +313,7 @@ export default function Scheduler({ extracted = null }) {
                       onChange={(e) =>
                         updateMedicine(medicine.id, "duration", e.target.value)
                       }
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="block w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-900 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="e.g., 7 days, 2 weeks"
                     />
                   </div>
@@ -335,9 +327,9 @@ export default function Scheduler({ extracted = null }) {
         {medicines.some(
           (med) => med.name && med.dosage && med.time && med.duration
         ) && (
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="font-medium text-blue-900 mb-2">Schedule Summary</h3>
-            <div className="space-y-1 text-sm text-blue-800">
+          <div className="mb-6 p-4 bg-blue-900/40 border border-blue-700 rounded-lg">
+            <h3 className="font-medium text-blue-300 mb-2">Schedule Summary</h3>
+            <div className="space-y-1 text-sm text-blue-200">
               {medicines
                 .filter((med) => med.name && med.time)
                 .map((med, idx) => (

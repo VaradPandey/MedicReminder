@@ -151,12 +151,12 @@ export default function Upload({
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg ">
+    <div className="max-w-md mx-auto p-6 bg-gray-900 text-gray-100 rounded-lg shadow-lg border border-gray-700">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-gray-100 mb-2">
           Prescription Scanner
         </h2>
-        <p className="text-gray-600 text-sm">
+        <p className="text-gray-400 text-sm">
           Choose a prescription file to scan and extract information
         </p>
       </div>
@@ -164,7 +164,7 @@ export default function Upload({
       {!selectedFile ? (
         // File Selection Area
         <div
-          className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors duration-200"
+          className="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center hover:border-blue-500 transition-colors duration-200"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
@@ -206,7 +206,7 @@ export default function Upload({
         // File Preview and Scan
         <div className="space-y-4">
           {/* File Info */}
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-gray-800 rounded-lg p-4">
             <div className="flex items-center space-x-3">
               <div className="flex-shrink-0">
                 <svg
@@ -224,7 +224,7 @@ export default function Upload({
                 </svg>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-medium text-gray-100 truncate">
                   {selectedFile.name}
                 </p>
                 <p className="text-sm text-gray-500">
@@ -256,7 +256,7 @@ export default function Upload({
           {isScanning && (
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Scanning prescription...</span>
+                <span className="text-gray-300">Scanning prescription...</span>
                 <span className="text-gray-900">{scanProgress}%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
@@ -270,7 +270,7 @@ export default function Upload({
 
           {/* Scan Results */}
           {scanComplete && scanResults && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="bg-green-900 border border-green-700 rounded-lg p-4">
               <div className="flex items-center mb-3">
                 <svg
                   className="h-5 w-5 text-green-600 mr-2"
@@ -285,7 +285,7 @@ export default function Upload({
                     d="M5 13l4 4L19 7"
                   ></path>
                 </svg>
-                <span className="text-green-800 text-sm font-medium">
+                <span className="text-green-100 text-sm font-medium">
                   Prescription scanned successfully!
                 </span>
               </div>
@@ -294,27 +294,27 @@ export default function Upload({
               <div className="space-y-2 text-xs">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <span className="font-medium text-gray-600">Patient:</span>
+                    <span className="font-medium text-gray-100">Patient:</span>
                     <p className="text-gray-800">{scanResults.patientName}</p>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-600">Doctor:</span>
+                    <span className="font-medium text-gray-100">Doctor:</span>
                     <p className="text-gray-800">{scanResults.doctorName}</p>
                   </div>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">Date:</span>
+                  <span className="font-medium text-gray-100">Date:</span>
                   <p className="text-gray-800">{scanResults.dateIssued}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">Diagnosis:</span>
+                  <span className="font-medium text-gray-100">Diagnosis:</span>
                   <p className="text-gray-800">{scanResults.diagnosis}</p>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-600">
+                  <span className="font-medium text-gray-100">
                     Medications:
                   </span>
-                  <ul className="text-gray-800 ml-2">
+                  <ul className="text-gray-200 ml-2">
                     {(() => {
                       let meds = scanResults.medications;
                       if (Array.isArray(meds)) {
@@ -425,7 +425,7 @@ export default function Upload({
             )}
             <button
               onClick={handleReset}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+              className="px-4 py-2 border border-gray-300 text-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
             >
               Cancel
             </button>
