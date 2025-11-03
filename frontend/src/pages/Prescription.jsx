@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Upload from "../components/Upload.jsx";
+import Upload from "../components/upload";
 import Prescriptions from "../components/prescriptions.jsx";
 
 export default function Prescription() {
