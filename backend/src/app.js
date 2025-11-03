@@ -15,7 +15,9 @@ const app = express();
 // the browser gets an explicit Access-Control-Allow-Origin header (needed
 // when `withCredentials: true` is used from the frontend).
 const allowedOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim()).filter(Boolean)
+  ? process.env.CORS_ORIGIN.split(",")
+      .map((o) => o.trim())
+      .filter(Boolean)
   : [];
 
 app.use(
