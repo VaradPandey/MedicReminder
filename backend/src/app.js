@@ -39,8 +39,10 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// Ensure preflight requests also use the same CORS options
-app.options("*", cors(corsOptions));
+// Note: the cors middleware added above already handles OPTIONS (preflight)
+// requests. Explicitly calling app.options with the path '*' caused a
+// path-to-regexp error in some deployments (see logs). Avoid the explicit
+// app.options('*', ...) call to remain compatible with the router.
 app.use(
   express.json({
     limit: "16kb",
