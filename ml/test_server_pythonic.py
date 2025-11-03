@@ -10,7 +10,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://medic-reminder-two.vercel.app", "https://lifeaura-ml.onrender.com"]}}, supports_credentials=True)
+
+CORS(
+    app,
+    origins=["https://medic-reminder-two.vercel.app"],
+    supports_credentials=True,
+    methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+)
 
 github_api_key = os.getenv("GITHUB_API_KEY")
 
