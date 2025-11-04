@@ -45,7 +45,7 @@ export default function Header() {
             className="text-2xl font-bold cursor-pointer mx-auto text-blue-400"
             onClick={() => navigate("/")}
           >
-            CareSentry
+            LifeAuraAI
           </h1>
         </div>
 
