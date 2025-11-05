@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Container, LogoutBtn } from "./index";
+import { Container } from "./index";
+import { Sparkles } from "lucide-react";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function Header() {
 
   const navItems = [
     { name: "Home", path: "/" },
-    // { name: "Prediction", path: "/prediction" },
+    { name: "Prediction", external: "https://medicreminder-production-0a72.up.railway.app/" },
     { name: "Login", path: "/login", auth: false },
     { name: "Register", path: "/register", auth: false },
     { name: "Upload", path: "/upload", auth: true },
@@ -39,14 +40,15 @@ export default function Header() {
   return (
     <header className="py-4 shadow bg-gray-900 text-gray-100 border-b border-gray-700">
       <Container>
-        {/* Top Section: Project Name + Logout Button */}
+        {/* Logo / Title */}
         <div className="flex items-center justify-between">
-          <h1
-            className="text-2xl font-bold cursor-pointer mx-auto text-blue-400"
+          <div
+            className="flex items-center text-2xl font-bold cursor-pointer mx-auto text-blue-400"
             onClick={() => navigate("/")}
           >
-            LifeAuraAI
-          </h1>
+            <Sparkles className="text-blue-400 w-8 h-8 mr-2" />
+            LifeAura AI
+          </div>
         </div>
 
         {/* Navigation Bar */}
@@ -59,7 +61,13 @@ export default function Header() {
               .map((item) => (
                 <li key={item.name}>
                   <button
-                    onClick={() => navigate(item.path)}
+                    onClick={() => {
+                      if (item.external) {
+                        window.open(item.external, "_blank");
+                      } else {
+                        navigate(item.path);
+                      }
+                    }}
                     className="hover:text-blue-400 transition-colors"
                   >
                     {item.name}

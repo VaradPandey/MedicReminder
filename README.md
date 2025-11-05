@@ -1,6 +1,6 @@
 # MedicReminder
 
-* **Deployed Link:** [life-aura.vercel.app](https://life-aura.vercel.app)
+* **Deployed Link:** [life-aura.vercel.app](https://medic-reminder-two.vercel.app)
 
 LifeAura AI is an intelligent health management platform designed to assist users with **medication reminders**, **quick symptom guidance**, and **AI-powered analysis** for minor health issues. Built with a focus on accessibility and reliability, it serves as a digital health companion for individuals and caregivers alike.
 
@@ -8,10 +8,9 @@ LifeAura AI is an intelligent health management platform designed to assist user
 
 ## Features
 * **MERN-based Web App** – Full-stack application with a modern, scalable architecture.
-* **Medication Scheduling & Reminders** – Automated WhatsApp/SMS notifications to prevent missed doses.
+* **Medication Scheduling & Reminders** – Automated Telegram notifications to prevent missed doses.
 * **Prescription Digitization** – OCR-based scanning for easy tracking of medications.
-* **AI Chatbot** – Symptom-checking assistant for instant health guidance.
-* **Skin Condition Analysis** – AI-driven image analysis for basic dermatological support.
+* **AI Disease Prediction** – Symptom-checking assistant for instant health guidance.
 
 ---
 
@@ -40,8 +39,8 @@ LifeAura AI prioritizes data protection with:
 * **Frontend:** React.js
 * **Backend:** Node.js, Express.js
 * **Database:** MongoDB
-* **AI/ML Components:** Symptom-checking chatbot & image analysis models
-* **Communication:** WhatsApp & SMS integration
+* **AI/ML Components:** Symptom-checking chatbot & image analysis model
+* **Communication:** Telegram integration
 
 ---
 
