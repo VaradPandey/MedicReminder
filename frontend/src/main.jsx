@@ -81,7 +81,7 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      { path: "*", element: <Navigate to="/login" replace /> },
+      { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
 ]);
