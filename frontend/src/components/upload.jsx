@@ -64,7 +64,7 @@ export default function Upload({
       const form = new FormData();
       form.append("image", selectedFile);
 
-      const res = await fetch("https://medicreminder-ml.up.railway.app/extract", {
+      const res = await fetch("https://medicreminder-production-0f69.up.railway.app/extract", {
         method: "POST",
         body: form,
       });

@@ -29,7 +29,7 @@ export default function Header() {
 
   const navItems = [
     { name: "Home", path: "/" },
-    { name: "Prediction", external: "https://medicreminder-production-0a72.up.railway.app/" },
+    { name: "Prediction", external: "https://medicreminder-production-124d.up.railway.app/" },
     { name: "Login", path: "/login", auth: false },
     { name: "Register", path: "/register", auth: false },
     { name: "Upload", path: "/upload", auth: true },
