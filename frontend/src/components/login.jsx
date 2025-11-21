@@ -31,6 +31,9 @@ export default function Login() {
       const data = res?.data || {};
       if (data.status === 200 && data.user) {
         // Set authenticated user in context; cookie is set by server (httpOnly)
+        if (data.token) {
+          localStorage.setItem("accessToken", data.token);
+        }
         setUser(data.user);
         navigate("/upload", { replace: true });
       } else {

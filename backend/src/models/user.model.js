@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const JWT_SECRET = process.env.ACCESS_TOKEN_SECRET || "dev-secret";
+const JWT_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "1h";
+
 const userSchema=new mongoose.Schema({
     username:{
         type: String,
@@ -48,7 +51,7 @@ userSchema.methods.setUser=async function(){
         email: this.email
     }
 
-    return jwt.sign(payload,"sankalp");
+    return jwt.sign(payload,JWT_SECRET,{expiresIn: JWT_EXPIRY});
 }
 
 export const User=mongoose.model('User',userSchema);

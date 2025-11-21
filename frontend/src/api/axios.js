@@ -1,6 +1,16 @@
 import axios from "axios";
 
-export default axios.create({
+const api = axios.create({
   baseURL: "https://medicreminder-production-aaca.up.railway.app/api",
   withCredentials: true,
 });
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export default api;

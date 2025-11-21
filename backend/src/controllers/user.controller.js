@@ -30,10 +30,11 @@ const login = async (req, res) => {
     return res.json({ status: 400, message: "Invalid password" });
   }
   const token = await user.setUser();
+  const isProd = process.env.NODE_ENV === "production";
   res.cookie("accessToken", token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "None",
+    secure: isProd,
+    sameSite: isProd ? "None" : "Lax",
     maxAge: 24*60*60*1000
   });
   // sanitize user before sending to client
@@ -43,6 +44,7 @@ const login = async (req, res) => {
     status: 200,
     message: "User logged in successfully",
     user: safeUser,
+    token,
   });
 };
 

@@ -9,10 +9,12 @@ import debugRouter from "./routes/debug.route.js";
 
 const app = express();
 
-app.set("trust proxy", 1);
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim())
+  : ["https://medic-reminder-two.vercel.app"];
 
 app.use(cors({
-origin: "https://medic-reminder-two.vercel.app",
+origin: allowedOrigins,
 credentials: true
 }));
 

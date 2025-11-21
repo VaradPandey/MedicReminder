@@ -10,11 +10,12 @@ export default function LogoutBtn() {
   const handleLogout = async () => {
     try {
       await api.post("/users/logout", {}, { withCredentials: true });
-      setUser(null); // 🧠 clear context
-      navigate("/login");
     } catch (err) {
       console.error("Logout failed:", err);
-      alert("Failed to logout. Try again.");
+    } finally {
+      localStorage.removeItem("accessToken");
+      setUser(null);
+      navigate("/login");
     }
   };
 

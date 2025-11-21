@@ -10,10 +10,10 @@ export function AuthProvider({children}){
     const logout=async()=>{
         try{
             await api.post('/users/logout')
-            setUser(null)
         }catch(_e){
-            setUser(null)
         }
+        localStorage.removeItem("accessToken")
+        setUser(null)
     }
 
     useEffect(()=>{
