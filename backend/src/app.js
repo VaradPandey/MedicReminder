@@ -9,6 +9,8 @@ import debugRouter from "./routes/debug.route.js";
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 app.use(cors({
 origin: "https://medic-reminder-two.vercel.app",
 credentials: true
