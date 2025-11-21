@@ -31,10 +31,10 @@ const login = async (req, res) => {
   }
   const token = await user.setUser();
   res.cookie("accessToken", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV==="production",
-      sameSite: process.env.NODE_ENV==="production"?"None":"Lax",
-      maxAge: 24*60*60*1000
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    maxAge: 24*60*60*1000
   });
   // sanitize user before sending to client
   const safeUser = user.toObject ? user.toObject() : user;
