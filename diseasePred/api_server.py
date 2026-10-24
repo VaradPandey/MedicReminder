@@ -1,3 +1,5 @@
+import os
+import requests
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
@@ -7,6 +9,12 @@ import pickle
 
 app = FastAPI(title="CURE-BOT Disease Prediction API")
 
+MODEL_URL = os.getenv(
+    "MODEL_URL",
+    "https://drive.google.com/uc?export=download&id=1-YAyGCBT1q8W7wgieA_k7XB8NcUXlQgT",
+)
+MODEL_PATH = "disease_prediction_catboost_hybrid.pkl"
+
 
 class PredictRequest(BaseModel):
     symptoms: List[str]
@@ -15,7 +23,16 @@ class PredictRequest(BaseModel):
 @app.on_event("startup")
 def load_resources():
     global MODEL, LABEL_ENCODER, SYMPTOMS_LIST, DISEASE_INFO, ACCURACY
-    with open("disease_prediction_catboost_hybrid.pkl", "rb") as f:
+
+    if not os.path.exists(MODEL_PATH):
+        print(f"[diseasePred] Model artifact '{MODEL_PATH}' not found. Downloading from Google Drive...")
+        r = requests.get(MODEL_URL, timeout=60)
+        r.raise_for_status()
+        with open(MODEL_PATH, "wb") as f:
+            f.write(r.content)
+        print(f"[diseasePred] Successfully downloaded {MODEL_PATH} ({len(r.content)} bytes)")
+
+    with open(MODEL_PATH, "rb") as f:
         data = pickle.load(f)
     MODEL = data["model"]
     LABEL_ENCODER = data["label_encoder"]

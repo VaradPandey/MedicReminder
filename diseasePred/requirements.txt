@@ -1,6 +1,11 @@
-streamlit
-pandas
-scikit-learn
-catboost
-requests
-numpy 
+# Disease Prediction Microservice Dependencies
+# Compatible with Python 3.11.9
+fastapi>=0.115.0
+uvicorn>=0.30.0
+python-dotenv>=1.0.0
+scikit-learn==1.5.1
+catboost>=1.2.0
+pandas>=2.2.0
+numpy>=1.26.0
+requests>=2.31.0
+streamlit>=1.35.0

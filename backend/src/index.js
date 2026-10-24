@@ -12,13 +12,24 @@ console.log("CORS_ORIGIN:", process.env.CORS_ORIGIN);
 // Use the host-provided PORT when available (required on many PaaS providers)
 const port = process.env.PORT || 3000;
 
-connectDb()
-  .then(
-    app.listen(port, () => {
-      console.log(`Listening at port ${port}`);
+let server;
+
+const startServer = async (listenPort = port) => {
+  try {
+    await connectDb();
+    server = app.listen(listenPort, () => {
+      console.log(`Listening at port ${listenPort}`);
       telegramSetup();
-    })
-  )
-  .catch((err) => {
-    console.log(err);
-  });
+    });
+    return server;
+  } catch (err) {
+    console.error("Failed to connect to database:", err);
+    process.exit(1);
+  }
+};
+
+if (process.env.NODE_ENV !== "test") {
+  startServer();
+}
+
+export { startServer, server };

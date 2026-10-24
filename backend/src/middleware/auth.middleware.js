@@ -9,7 +9,7 @@ const authenticate=async(req,res,next)=>{
         : null;
     const token= tokenFromHeader || req.cookies?.accessToken;
     if (!token) {
-        return res.status(400).json({ status: 400,message: "Token Not Found" });
+        return res.status(401).json({ status: 401, message: "Token Not Found" });
     }
 
     try {

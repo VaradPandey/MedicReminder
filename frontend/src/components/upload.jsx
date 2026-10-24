@@ -16,6 +16,7 @@ export default function Upload({
   const [scanComplete, setScanComplete] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
   const [scanResults, setScanResults] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const progressTimerRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -27,6 +28,7 @@ export default function Upload({
     setScanResults(null);
     setExtracted(null);
     setResult("");
+    setErrorMessage(null);
   };
 
   const safeText = (val) => typeof val === "object" ? JSON.stringify(val) : val || "N/A";
@@ -44,6 +46,7 @@ export default function Upload({
     setScanResults(null);
     setExtracted(null);
     setResult("");
+    setErrorMessage(null);
   };
 
   const handleScan = async () => {
@@ -53,6 +56,7 @@ export default function Upload({
     setScanProgress(0);
     setScanComplete(false);
     setScanResults(null);
+    setErrorMessage(null);
 
     // Simulate progress while waiting on the ML API
     if (progressTimerRef.current) clearInterval(progressTimerRef.current);
@@ -64,12 +68,12 @@ export default function Upload({
       const form = new FormData();
       form.append("image", selectedFile);
 
-      const res = await fetch("https://medicreminder-production-0f69.up.railway.app/extract", {
-        method: "POST",
-        body: form,
+      const res = await api.post("/prescriptions/extract", form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      if (!res.ok) throw new Error(`ML server error (${res.status})`);
-      const data = await res.json();
+      const data = res?.data;
 
       // Raw result may be fenced with ```json ... ```; strip fences
       const raw = data?.result || "";
@@ -113,6 +117,12 @@ export default function Upload({
       setScanComplete(true);
     } catch (error) {
       console.error("Scanning failed:", error);
+      const serverMsg =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        error.message ||
+        "Scanning failed. Please check the OCR service.";
+      setErrorMessage(typeof serverMsg === "object" ? JSON.stringify(serverMsg) : String(serverMsg));
       setScanComplete(false);
       setScanResults(null);
     } finally {
@@ -135,6 +145,7 @@ export default function Upload({
     setScanComplete(false);
     setScanProgress(0);
     setScanResults(null);
+    setErrorMessage(null);
     // Clear parent-level outputs so new upload starts fresh
     setExtracted(null);
     setResult("");
@@ -162,6 +173,28 @@ export default function Upload({
           Choose a prescription file to scan and extract information
         </p>
       </div>
+
+      {errorMessage && (
+        <div className="mb-4 bg-red-950/80 border border-red-700/80 rounded-lg p-3 text-red-200 text-sm flex items-start space-x-2">
+          <svg
+            className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <div className="flex-1">
+            <p className="font-semibold text-red-100">Scan Failed</p>
+            <p className="text-xs text-red-300 mt-1 whitespace-pre-wrap">{errorMessage}</p>
+          </div>
+        </div>
+      )}
 
       {!selectedFile ? (
         // File Selection Area

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAuth } from "../context/AuthContext.jsx";
 import { Container } from "./index";
 import { Sparkles } from "lucide-react";
 
 export default function Header() {
   const navigate = useNavigate();
-  const authStatus = useSelector((state) => state.auth.status);
+  const { user, logout } = useAuth();
+  const authStatus = !!user;
   const [isDark, setIsDark] = useState(false);
 
   // Initialize theme from localStorage or system preference
@@ -29,7 +30,7 @@ export default function Header() {
 
   const navItems = [
     { name: "Home", path: "/" },
-    { name: "Prediction", external: "https://medicreminder-production-124d.up.railway.app/" },
+    { name: "Prediction", path: "/prediction" },
     { name: "Login", path: "/login", auth: false },
     { name: "Register", path: "/register", auth: false },
     { name: "Upload", path: "/upload", auth: true },
@@ -53,7 +54,7 @@ export default function Header() {
 
         {/* Navigation Bar */}
         <nav className="mt-3">
-          <ul className="flex justify-center space-x-8">
+          <ul className="flex justify-center space-x-8 items-center">
             {navItems
               .filter((item) =>
                 authStatus ? item.auth !== false : item.auth !== true
@@ -74,6 +75,19 @@ export default function Header() {
                   </button>
                 </li>
               ))}
+            {authStatus && (
+              <li>
+                <button
+                  onClick={async () => {
+                    await logout();
+                    navigate("/login");
+                  }}
+                  className="hover:text-red-400 text-red-300 transition-colors font-medium cursor-pointer"
+                >
+                  Logout
+                </button>
+              </li>
+            )}
           </ul>
         </nav>
       </Container>

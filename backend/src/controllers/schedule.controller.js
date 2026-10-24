@@ -26,6 +26,9 @@ const createFromPrescription = async (req, res) => {
           const doc = await Schedule.create({
             user: userId,
             chatId,
+            medicine: medName,
+            time: String(t),
+            duration: runs,
             message,
             cronTime,
             remainingRuns: runs,
@@ -45,6 +48,7 @@ const createFromPrescription = async (req, res) => {
       }
       return res.json({ success: true, count: created.length, data: created });
     }
+    return res.status(400).json({ success: false, message: "items must be an array" });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

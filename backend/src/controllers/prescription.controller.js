@@ -127,3 +127,63 @@ export const updatePrescription = async (req, res) => {
   }
 };
 
+export const extractPrescription = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ status: 401, message: "Unauthorized" });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ status: 400, message: "image file is required" });
+    }
+
+    const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://127.0.0.1:5000/extract";
+
+    const formData = new FormData();
+    const blob = new Blob([req.file.buffer], { type: req.file.mimetype || "image/jpeg" });
+    formData.append("image", blob, req.file.originalname || "prescription.jpg");
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60_000);
+
+    const mlResponse = await fetch(ML_SERVICE_URL, {
+      method: "POST",
+      body: formData,
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    if (!mlResponse.ok) {
+      let errorDetail = "";
+      try {
+        const errorJson = await mlResponse.json();
+        errorDetail = errorJson.error || errorJson.message || JSON.stringify(errorJson);
+      } catch {
+        errorDetail = await mlResponse.text();
+      }
+      return res.status(502).json({
+        status: 502,
+        message: "ML OCR service error",
+        error: errorDetail,
+      });
+    }
+
+    const data = await mlResponse.json();
+    return res.status(200).json({
+      status: 200,
+      success: true,
+      result: data.result || "",
+    });
+  } catch (err) {
+    if (err.name === "AbortError") {
+      return res.status(504).json({ status: 504, message: "ML OCR service timed out" });
+    }
+    return res.status(500).json({
+      status: 500,
+      message: "Failed to extract prescription",
+      error: err.message,
+    });
+  }
+};
+

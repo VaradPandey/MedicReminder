@@ -37,7 +37,10 @@ app.use("/api/users", userRouter);
 app.use("/api", scheduleRouter);
 app.use("/api", prescriptionRouter);
 app.use("/api", predictRouter);
-app.use("/api/debug", debugRouter);
+
+if (process.env.NODE_ENV !== "production") {
+  app.use("/api/debug", debugRouter);
+}
 
 app.get("/", (req, res) => {
   res.send("HOMEPAGE");

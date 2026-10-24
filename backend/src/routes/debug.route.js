@@ -1,8 +1,12 @@
 import express from "express";
 import { bot } from "../services/telegram.service.js";
 import { Schedule } from "../models/schedule.model.js";
+import { authenticate } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
+
+// Enforce authentication for debug routes in development
+router.use(authenticate);
 
 // Send a one-off test message to a chatId (useful for debugging)
 // POST /api/debug/send

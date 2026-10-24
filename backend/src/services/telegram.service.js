@@ -3,11 +3,19 @@ import cron from "node-cron";
 import { Schedule } from "../models/schedule.model.js";
 
 // --- Initialize Telegram Bot ---
-export const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
+export const bot = process.env.TELEGRAM_BOT_TOKEN
+  ? new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, {
+      polling: process.env.NODE_ENV !== "test" && !process.env.NODE_TEST_CONTEXT,
+    })
+  : null;
 const jobs = {};
 
 // --- Main Setup Function ---
 export const telegramSetup = async () => {
+  if (!bot) {
+    console.log("[telegram] bot not initialized (TELEGRAM_BOT_TOKEN missing or test environment)");
+    return;
+  }
   console.log("[telegram] bot started ✅");
 
   // Listen for /start command in Telegram
