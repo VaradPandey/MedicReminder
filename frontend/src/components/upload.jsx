@@ -17,11 +17,39 @@ export default function Upload({
   const [scanProgress, setScanProgress] = useState(0);
   const [scanResults, setScanResults] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isConfirmed, setIsConfirmed] = useState(false);
   const progressTimerRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
+  const validateFile = (file) => {
+    if (!file) return { valid: false, reason: "No file selected" };
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/bmp", "image/tiff"];
+    const ext = file.name ? file.name.substring(file.name.lastIndexOf(".")).toLowerCase() : "";
+    const allowedExts = [".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff"];
+    if (!allowedTypes.includes(file.type) && !allowedExts.includes(ext)) {
+      return { valid: false, reason: `Unsupported type '${file.type || ext}'. Please upload a PNG, JPG, or WEBP image.` };
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      return { valid: false, reason: `File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds 15MB limit` };
+    }
+    return { valid: true };
+  };
+
+  const handleFileProcess = (file, source = "select") => {
+    if (!file) return;
+    const validation = validateFile(file);
+    console.log(
+      `[OCR][FRONTEND] File ${source} event name='${file.name}' type='${file.type}' ` +
+      `size_bytes=${file.size} valid=${validation.valid}`
+    );
+
+    if (!validation.valid) {
+      console.warn(`[OCR][FRONTEND] File validation failed: ${validation.reason}`);
+      setErrorMessage(validation.reason);
+      setSelectedFile(null);
+      return;
+    }
+
     setSelectedFile(file);
     setScanComplete(false);
     setScanProgress(0);
@@ -29,6 +57,11 @@ export default function Upload({
     setExtracted(null);
     setResult("");
     setErrorMessage(null);
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    handleFileProcess(file, "upload");
   };
 
   const safeText = (val) => typeof val === "object" ? JSON.stringify(val) : val || "N/A";
@@ -40,23 +73,35 @@ export default function Upload({
   const handleDrop = (event) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
-    setSelectedFile(file);
-    setScanComplete(false);
-    setScanProgress(0);
-    setScanResults(null);
-    setExtracted(null);
-    setResult("");
-    setErrorMessage(null);
+    handleFileProcess(file, "drop");
   };
 
   const handleScan = async () => {
-    if (!selectedFile) return;
+    if (isScanning) {
+      console.warn("[OCR][FRONTEND] Scan already in progress, ignoring duplicate click");
+      return;
+    }
+
+    const hasImage = Boolean(selectedFile);
+    console.info(`[OCR][FRONTEND] Scan button clicked has_image=${hasImage}`);
+
+    if (!selectedFile) {
+      console.warn("[OCR][FRONTEND] Scan aborted: no image selected");
+      return;
+    }
+
+    const reqId = Math.random().toString(36).substring(2, 10);
+    const startTime = performance.now();
+    console.info(
+      `[OCR][FRONTEND] Scan request started request_id=${reqId} file_name="${selectedFile.name}" size_bytes=${selectedFile.size}`
+    );
 
     setIsScanning(true);
     setScanProgress(0);
     setScanComplete(false);
     setScanResults(null);
     setErrorMessage(null);
+    setIsConfirmed(false);
 
     // Simulate progress while waiting on the ML API
     if (progressTimerRef.current) clearInterval(progressTimerRef.current);
@@ -71,6 +116,7 @@ export default function Upload({
       const res = await api.post("/prescriptions/extract", form, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "X-Request-Id": reqId,
         },
       });
       const data = res?.data;
@@ -87,6 +133,8 @@ export default function Upload({
       } catch {
         // leave parsed as null
       }
+
+      let medicationsCount = 0;
       if (parsed) {
         setExtracted(parsed);
 
@@ -102,6 +150,8 @@ export default function Upload({
           frequency: p.frequency || p.freq || "",
           duration: p.duration || "",
         }));
+        medicationsCount = medications.length;
+
         const preview = {
           patientName:
             parsed.patientName || parsed.patient || parsed.name || "",
@@ -109,20 +159,37 @@ export default function Upload({
           dateIssued: parsed.dateIssued || parsed.date || "",
           diagnosis: parsed.diagnosis || parsed.findings || "",
           medications,
+          needsReview: Boolean(parsed.needs_review),
         };
         setScanResults(preview);
       }
 
+      const durationMs = Math.round(performance.now() - startTime);
+      console.info(
+        `[OCR][FRONTEND] Scan completed request_id=${reqId} duration_ms=${durationMs} medicine_count=${medicationsCount} needs_review=${Boolean(
+          parsed?.needs_review
+        )}`
+      );
+
       setScanProgress(100);
       setScanComplete(true);
     } catch (error) {
-      console.error("Scanning failed:", error);
+      const durationMs = Math.round(performance.now() - startTime);
       const serverMsg =
         error.response?.data?.error ||
         error.response?.data?.message ||
         error.message ||
         "Scanning failed. Please check the OCR service.";
-      setErrorMessage(typeof serverMsg === "object" ? JSON.stringify(serverMsg) : String(serverMsg));
+      const sanitizedError =
+        typeof serverMsg === "object" ? JSON.stringify(serverMsg) : String(serverMsg);
+
+      console.error(
+        `[OCR][FRONTEND] Scan failed request_id=${reqId} duration_ms=${durationMs} status=${
+          error.response?.status || "unknown"
+        } error="${sanitizedError}"`
+      );
+
+      setErrorMessage(sanitizedError);
       setScanComplete(false);
       setScanResults(null);
     } finally {
@@ -146,6 +213,7 @@ export default function Upload({
     setScanProgress(0);
     setScanResults(null);
     setErrorMessage(null);
+    setIsConfirmed(false);
     // Clear parent-level outputs so new upload starts fresh
     setExtracted(null);
     setResult("");
@@ -354,6 +422,31 @@ export default function Upload({
                 </div>
               </div>
 
+              {/* Explicit Prescription Review Notice & Confirmation */}
+              {scanResults.needsReview && (
+                <div className="mt-4 bg-amber-950/70 border border-amber-600/70 rounded-lg p-3 text-amber-200 text-xs">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <svg className="h-4 w-4 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span className="font-semibold text-amber-100">Review & Confirmation Required</span>
+                  </div>
+                  <p className="text-amber-300 mb-2">
+                    Please review the transcribed medication names, dosages, and instructions above before saving or scheduling.
+                  </p>
+                  <label className="flex items-center space-x-2 cursor-pointer pt-2 border-t border-amber-800/60 text-amber-100 font-medium">
+                    <input
+                      type="checkbox"
+                      id="confirm-review-checkbox"
+                      checked={isConfirmed}
+                      onChange={(e) => setIsConfirmed(e.target.checked)}
+                      className="h-4 w-4 rounded border-amber-400 text-purple-600 focus:ring-purple-500 cursor-pointer"
+                    />
+                    <span>I have reviewed and confirmed the prescription details.</span>
+                  </label>
+                </div>
+              )}
+
             </div>
           )}
 
@@ -403,7 +496,7 @@ export default function Upload({
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       ></path>
                     </svg>
-                    Scan Prescription
+                    {errorMessage ? "Retry Scan" : "Scan Prescription"}
                   </>
                 )}
               </button>
@@ -411,6 +504,10 @@ export default function Upload({
               <>
                 <button
                   onClick={async () => {
+                    if (scanResults?.needsReview && !isConfirmed) {
+                      alert("Please review the prescription and check the confirmation box before saving.");
+                      return;
+                    }
                     // Save prescription to backend
                     try {
                       await api.post("/prescriptions", scanResults);
@@ -418,10 +515,11 @@ export default function Upload({
                       handleReset();
                       window.location.href = "/prescriptions";
                     } catch (err) {
-                      alert("Failed to save prescription");
+                      alert("Failed to save prescription: " + (err.response?.data?.message || err.message));
                     }
                   }}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200"
+                  disabled={scanResults?.needsReview && !isConfirmed}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200"
                 >
                   Save Prescription
                 </button>

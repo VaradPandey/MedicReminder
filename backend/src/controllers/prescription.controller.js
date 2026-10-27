@@ -128,15 +128,28 @@ export const updatePrescription = async (req, res) => {
 };
 
 export const extractPrescription = async (req, res) => {
+  const startTime = Date.now();
+  const reqId = req.headers["x-request-id"] || Math.random().toString(36).substring(2, 10);
+  const getLogTimestamp = () => new Date().toISOString().replace("T", " ").substring(0, 19);
+
   try {
     const userId = req.user?._id;
     if (!userId) {
+      console.warn(`${getLogTimestamp()} WARN [OCR][BACKEND] Unauthorized request request_id=${reqId}`);
       return res.status(401).json({ status: 401, message: "Unauthorized" });
     }
 
+    console.log(`${getLogTimestamp()} INFO [OCR][BACKEND] Incoming prescription extraction request user_id=${userId} request_id=${reqId}`);
+
     if (!req.file) {
+      console.warn(`${getLogTimestamp()} WARN [OCR][BACKEND] Request validation failed request_id=${reqId} reason='no image file attached'`);
       return res.status(400).json({ status: 400, message: "image file is required" });
     }
+
+    console.log(
+      `${getLogTimestamp()} INFO [OCR][BACKEND] Request validation passed request_id=${reqId} ` +
+      `filename='${req.file.originalname}' mimetype='${req.file.mimetype}' size_bytes=${req.file.size}`
+    );
 
     const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://127.0.0.1:5000/extract";
 
@@ -144,15 +157,23 @@ export const extractPrescription = async (req, res) => {
     const blob = new Blob([req.file.buffer], { type: req.file.mimetype || "image/jpeg" });
     formData.append("image", blob, req.file.originalname || "prescription.jpg");
 
+    console.log(`${getLogTimestamp()} INFO [OCR][BACKEND] Forwarding request to ML service request_id=${reqId} url=${ML_SERVICE_URL}`);
+
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 60_000);
+    const timeout = setTimeout(() => controller.abort(), 90_000);
 
     const mlResponse = await fetch(ML_SERVICE_URL, {
       method: "POST",
       body: formData,
+      headers: {
+        "X-Request-Id": reqId,
+      },
       signal: controller.signal,
     });
     clearTimeout(timeout);
+
+    const durationMs = Date.now() - startTime;
+    console.log(`${getLogTimestamp()} INFO [OCR][BACKEND] ML service response received request_id=${reqId} status=${mlResponse.status} duration_ms=${durationMs}`);
 
     if (!mlResponse.ok) {
       let errorDetail = "";
@@ -162,27 +183,42 @@ export const extractPrescription = async (req, res) => {
       } catch {
         errorDetail = await mlResponse.text();
       }
-      return res.status(502).json({
-        status: 502,
-        message: "ML OCR service error",
-        error: errorDetail,
+      const sanitizedError = String(errorDetail).replace(/[\r\n]+/g, " ").substring(0, 200);
+      console.error(`${getLogTimestamp()} ERROR [OCR][BACKEND] ML OCR service error request_id=${reqId} duration_ms=${durationMs} error='${sanitizedError}'`);
+      return res.status(mlResponse.status || 502).json({
+        status: mlResponse.status || 502,
+        message: sanitizedError || "ML OCR service error",
+        error: sanitizedError,
+        requestId: reqId,
       });
     }
 
     const data = await mlResponse.json();
+    console.log(`${getLogTimestamp()} INFO [OCR][BACKEND] Extraction completed successfully request_id=${reqId} duration_ms=${durationMs} status=200`);
+
     return res.status(200).json({
       status: 200,
       success: true,
       result: data.result || "",
+      requestId: reqId,
     });
   } catch (err) {
+    const durationMs = Date.now() - startTime;
     if (err.name === "AbortError") {
-      return res.status(504).json({ status: 504, message: "ML OCR service timed out" });
+      console.error(`${getLogTimestamp()} ERROR [OCR][BACKEND] ML OCR service timed out request_id=${reqId} duration_ms=${durationMs}`);
+      return res.status(504).json({
+        status: 504,
+        message: "ML OCR service timed out after 90s. The vision model is running slowly. Please retry in a few moments.",
+        requestId: reqId,
+      });
     }
+    const sanitizedError = String(err.message || err).replace(/[\r\n]+/g, " ").substring(0, 200);
+    console.error(`${getLogTimestamp()} ERROR [OCR][BACKEND] Extraction request failed request_id=${reqId} duration_ms=${durationMs} error='${sanitizedError}'`);
     return res.status(500).json({
       status: 500,
       message: "Failed to extract prescription",
-      error: err.message,
+      error: sanitizedError,
+      requestId: reqId,
     });
   }
 };

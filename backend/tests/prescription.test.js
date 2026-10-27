@@ -152,8 +152,8 @@ test("TASK-008: POST /api/prescriptions/extract accepts image upload and communi
       body: formData,
     });
 
-    // If ML service is running: returns 200 (or 500 from ML if fake bytes); if not running: 502/500 handled gracefully
-    assert.ok([200, 500, 502, 504].includes(res.status), `Unexpected status: ${res.status}`);
+    // If ML service is running: returns 200 (or 400/500 from ML if fake bytes); if not running: 502/500 handled gracefully
+    assert.ok([200, 400, 500, 502, 504].includes(res.status), `Unexpected status: ${res.status}`);
     const body = await res.json();
     assert.ok(body.message || body.result !== undefined || body.error);
   } finally {

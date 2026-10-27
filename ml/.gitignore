@@ -8,9 +8,24 @@ __pycache__/
 venv/
 env/
 
-# Environment files
+# Environment files and credentials
 .env
-.env.local
+.env.*
+!.env.example
 
 # Logs
 *.log
+
+# Sensitive prescription images and local evaluation outputs
+prescriptions/
+test_images/
+eval_report*.json
+*.prescription.*
+*.rx.*
+test_rx.*
+rx_*
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.bmp
