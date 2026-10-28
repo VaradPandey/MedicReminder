@@ -8,6 +8,10 @@ __pycache__/
 venv/
 env/
 
+# Model files
+*.pkl
+
+
 # Environment files and credentials
 .env
 .env.*

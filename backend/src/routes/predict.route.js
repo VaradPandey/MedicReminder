@@ -2,8 +2,10 @@ import express from "express";
 
 const router = express.Router();
 
-// Proxy to disease model server. Configure base via env DISEASE_MODEL_BASE
-const MODEL_BASE = process.env.DISEASE_MODEL_BASE || "http://127.0.0.1:5001";
+// Proxy to disease model server. Configure base via env DISEASE_MODEL_BASE or ML_SERVICE_URL
+const MODEL_BASE =
+  process.env.DISEASE_MODEL_BASE ||
+  (process.env.ML_SERVICE_URL ? process.env.ML_SERVICE_URL.replace(/\/extract\/?$/, "") : "http://127.0.0.1:5000");
 const MODEL_URL = `${MODEL_BASE}/predict`;
 
 // POST /api/predict

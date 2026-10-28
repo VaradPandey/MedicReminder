@@ -1,0 +1,54 @@
+services:
+  # Node.js / Express Backend Web Service
+  - type: web
+    name: medicreminder-backend
+    runtime: node
+    plan: free
+    region: singapore
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: CORS_ORIGIN
+        value: https://medic-reminder-two.vercel.app
+      - key: ACCESS_TOKEN_EXPIRY
+        value: 1d
+      - key: MONGO_URI_ATLAS
+        sync: false
+      - key: ACCESS_TOKEN_SECRET
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: ML_SERVICE_URL
+        sync: false
+      - key: DISEASE_MODEL_BASE
+        sync: false
+
+  # Python Prescription OCR & Disease Prediction Web Service
+  - type: web
+    name: medicreminder-ml
+    runtime: python
+    plan: free
+    region: singapore
+    rootDir: ml
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120 --workers 1
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: OCR_ENGINE
+        value: gemini
+      - key: GEMINI_MODEL_ID
+        value: gemini-flash-lite-latest
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false

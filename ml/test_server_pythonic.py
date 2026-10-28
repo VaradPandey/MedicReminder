@@ -28,6 +28,12 @@ load_dotenv(env_path, override=True)
 
 from ocr_engine import PrescriptionOCREngine, PrescriptionOCRError
 
+try:
+    import disease_predictor
+except Exception as _dp_err:
+    logger.warning(f"Disease predictor import failed or deferred: {_dp_err}")
+    disease_predictor = None
+
 app = Flask(__name__)
 
 allowed_origins = [
@@ -50,7 +56,7 @@ def home():
     ocr_engine.reload_config()
     return jsonify({
         "status": "online",
-        "service": "MedicReminder Prescription OCR Service",
+        "service": "MedicReminder ML & Prediction Service",
         "engine": ocr_engine.engine_mode,
         "model": ocr_engine.vision_model_id
     }), 200
@@ -61,9 +67,29 @@ def health():
     ocr_engine.reload_config()
     return jsonify({
         "status": "ok",
+        "service": "MedicReminder ML & Prediction Service",
         "engine": ocr_engine.engine_mode,
         "model": ocr_engine.vision_model_id
     }), 200
+
+
+@app.route('/symptoms', methods=['GET'])
+def symptoms_endpoint():
+    if not disease_predictor:
+        return jsonify({"error": "Disease predictor not available"}), 503
+    res, code = disease_predictor.get_symptoms()
+    return jsonify(res), code
+
+
+@app.route('/predict', methods=['POST'])
+def predict_endpoint():
+    if not disease_predictor:
+        return jsonify({"error": "Disease predictor not available"}), 503
+    payload = request.get_json(silent=True) or {}
+    symptoms = payload.get("symptoms", [])
+    res, code = disease_predictor.predict(symptoms)
+    return jsonify(res), code
+
 
 
 @app.route('/extract', methods=['POST'])

@@ -9,14 +9,41 @@ import debugRouter from "./routes/debug.route.js";
 
 const app = express();
 
-const allowedOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim())
-  : ["https://medic-reminder-two.vercel.app"];
+const defaultOrigins = [
+  "https://medic-reminder-two.vercel.app",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+];
 
-app.use(cors({
-origin: allowedOrigins,
-credentials: true
-}));
+const configuredOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim()).filter(Boolean)
+  : [];
+
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...configuredOrigins]));
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (curl, health checkers, server-to-server)
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        (origin.endsWith(".vercel.app") && origin.includes("medic-reminder"))
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
+    credentials: true,
+  })
+);
+
+// Lightweight health check endpoints
+app.get(["/health", "/api/health"], (req, res) => {
+  res.status(200).json({ status: "ok", service: "MedicReminder Backend" });
+});
 
 app.use(
   express.json({

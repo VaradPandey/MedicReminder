@@ -9,7 +9,7 @@ dotenv.config({
 // Log environment info helpful for diagnosing CORS issues in deployed environments
 console.log("NODE_ENV:", process.env.NODE_ENV);
 console.log("CORS_ORIGIN:", process.env.CORS_ORIGIN);
-// Use the host-provided PORT when available (required on many PaaS providers)
+// Connected to MongoDB Atlas cluster
 const port = process.env.PORT || 3000;
 
 let server;
@@ -17,8 +17,8 @@ let server;
 const startServer = async (listenPort = port) => {
   try {
     await connectDb();
-    server = app.listen(listenPort, () => {
-      console.log(`Listening at port ${listenPort}`);
+    server = app.listen(listenPort, "0.0.0.0", () => {
+      console.log(`Listening at http://0.0.0.0:${listenPort}`);
       telegramSetup();
     });
     return server;
