@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { LogOut } from "lucide-react";
 
 export default function LogoutBtn() {
   const navigate = useNavigate();
@@ -22,9 +23,12 @@ export default function LogoutBtn() {
   return (
     <button
       onClick={handleLogout}
-      className="inline-block px-6 py-2 duration-200 bg-red-600 hover:bg-red-700 rounded-full text-white"
+      type="button"
+      className="btn-obsidian text-xs"
+      style={{ height: "36px", padding: "0 16px" }}
     >
-      Logout
+      <LogOut className="w-3.5 h-3.5 mr-1" />
+      <span>Sign Out</span>
     </button>
   );
 }

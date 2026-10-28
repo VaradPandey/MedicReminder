@@ -29,11 +29,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <RedirectIfAuth>
-            <Landing />
-          </RedirectIfAuth>
-        ),
+        element: <Landing />,
       },
       {
         path: "login",
@@ -60,6 +56,10 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "landing",
+        element: <Landing />,
+      },
+      {
         path: "prediction",
         element: <PredictionPage />,
       },
@@ -79,7 +79,7 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      { path: "*", element: <Navigate to="/" replace /> },
+      { path: "*", element: <Navigate to="/upload" replace /> },
     ],
   },
 ]);

@@ -9,9 +9,7 @@ export default function SchedulePage() {
 
   return (
     <PageWrapper>
-      <div className="min-h-[70vh] p-4">
-        <Scheduler extracted={prefill} />
-      </div>
+      <Scheduler extracted={prefill} />
     </PageWrapper>
   );
 }
