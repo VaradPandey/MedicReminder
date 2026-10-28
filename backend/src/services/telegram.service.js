@@ -60,3 +60,17 @@ export const startTelegramJob = async (doc) => {
   jobs[id] = job;
   return job;
 };
+
+// --- Cancel / Stop an Existing Reminder Job ---
+export const cancelTelegramJob = (id) => {
+  const strId = String(id);
+  if (jobs[strId]) {
+    try {
+      jobs[strId].stop();
+    } catch (e) {
+      console.error("[telegram] error stopping job:", e);
+    }
+    delete jobs[strId];
+    console.log(`[telegram] cancelled job ${strId}`);
+  }
+};

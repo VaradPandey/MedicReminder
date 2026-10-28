@@ -24,16 +24,23 @@ export const createTelegramSchedules = async (req, res) => {
       const cronTime = `${mm} ${hh} * * *`;
       const message = `${medicine} time reminder`;
 
+      const startDate = new Date();
+      const endDate = new Date(startDate.getTime() + duration * 24 * 60 * 60 * 1000);
+      endDate.setHours(hh, mm, 0, 0);
+
       const doc = await Schedule.create({
         user: userId,
         chatId,
         medicine,
+        dosage: s.dosage || "",
         message,
         cronTime,
         time: s.time,          // <-- add this
         duration,              // <-- add this
         remainingRuns: duration,
         active: true,
+        startDate,
+        endDate,
       });
 
       await startTelegramJob(doc);

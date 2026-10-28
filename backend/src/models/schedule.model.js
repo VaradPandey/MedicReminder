@@ -36,6 +36,17 @@ const scheduleSchema = new Schema(
       type: Number,
       default: 1,
     },
+    dosage: {
+      type: String,
+      default: "",
+    },
+    startDate: {
+      type: Date,
+      default: Date.now,
+    },
+    endDate: {
+      type: Date,
+    },
     active: {
       type: Boolean,
       default: true,

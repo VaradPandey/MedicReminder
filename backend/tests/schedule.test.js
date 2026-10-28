@@ -93,3 +93,94 @@ test("TASK-002: createFromPrescription handles non-array items gracefully", asyn
     server.close();
   }
 });
+
+test("TASK-009: Schedule lifecycle - list, update, extend, and delete", async () => {
+  const server = app.listen(0);
+  const port = server.address().port;
+
+  try {
+    // 1. Create a schedule
+    const scheduleDoc = await Schedule.create({
+      user: testUserId,
+      chatId: "987654321",
+      medicine: "Metformin",
+      dosage: "500mg",
+      time: "09:00",
+      duration: 7,
+      remainingRuns: 7,
+      cronTime: "0 9 * * *",
+      message: "Metformin time reminder",
+      active: true,
+      startDate: new Date(),
+    });
+
+    // 2. List schedules
+    const listRes = await fetch(`http://127.0.0.1:${port}/api/schedules`, {
+      headers: {
+        Authorization: `Bearer ${testToken}`,
+      },
+    });
+    assert.strictEqual(listRes.status, 200);
+    const listData = await listRes.json();
+    assert.ok(Array.isArray(listData));
+    const found = listData.find((s) => s._id === scheduleDoc._id.toString());
+    assert.ok(found);
+    assert.strictEqual(found.medicine, "Metformin");
+
+    // 3. Update schedule (edit time and dosage)
+    const updateRes = await fetch(`http://127.0.0.1:${port}/api/schedules/${scheduleDoc._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${testToken}`,
+      },
+      body: JSON.stringify({
+        medicine: "Metformin XR",
+        dosage: "1000mg",
+        time: "10:30",
+        duration: 10,
+      }),
+    });
+    assert.strictEqual(updateRes.status, 200);
+    const updateBody = await updateRes.json();
+    assert.strictEqual(updateBody.success, true);
+    assert.strictEqual(updateBody.data.medicine, "Metformin XR");
+    assert.strictEqual(updateBody.data.dosage, "1000mg");
+    assert.strictEqual(updateBody.data.time, "10:30");
+    assert.strictEqual(updateBody.data.cronTime, "30 10 * * *");
+
+    // 4. Extend schedule by 5 days
+    const extendRes = await fetch(`http://127.0.0.1:${port}/api/schedules/${scheduleDoc._id}/extend`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${testToken}`,
+      },
+      body: JSON.stringify({ days: 5 }),
+    });
+    assert.strictEqual(extendRes.status, 200);
+    const extendBody = await extendRes.json();
+    assert.strictEqual(extendBody.success, true);
+    assert.strictEqual(extendBody.data.duration, 15);
+    assert.strictEqual(extendBody.data.active, true);
+    assert.ok(extendBody.data.endDate);
+
+    // 5. Delete schedule
+    const deleteRes = await fetch(`http://127.0.0.1:${port}/api/schedules/${scheduleDoc._id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${testToken}`,
+      },
+    });
+    assert.strictEqual(deleteRes.status, 200);
+    const deleteBody = await deleteRes.json();
+    assert.strictEqual(deleteBody.success, true);
+
+    // Verify removed from DB
+    const checkDeleted = await Schedule.findById(scheduleDoc._id);
+    assert.strictEqual(checkDeleted, null);
+  } finally {
+    server.close();
+  }
+});
+
