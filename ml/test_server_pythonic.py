@@ -37,6 +37,8 @@ except Exception as _dp_err:
 app = Flask(__name__)
 
 allowed_origins = [
+    "https://medicreminder.vercel.app",
+    "https://medicreminder-backend.onrender.com",
     "https://medic-reminder-two.vercel.app",
     "https://medicreminder-production-aaca.up.railway.app",
     "https://medicreminder-production-0f69.up.railway.app",

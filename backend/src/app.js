@@ -10,6 +10,7 @@ import debugRouter from "./routes/debug.route.js";
 const app = express();
 
 const defaultOrigins = [
+  "https://medicreminder.vercel.app",
   "https://medic-reminder-two.vercel.app",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
@@ -30,11 +31,12 @@ app.use(
       if (!origin) return callback(null, true);
       if (
         allowedOrigins.includes(origin) ||
-        (origin.endsWith(".vercel.app") && origin.includes("medic-reminder"))
+        (origin.endsWith(".vercel.app") &&
+          (origin.includes("medicreminder") || origin.includes("medic-reminder")))
       ) {
         return callback(null, true);
       }
-      return callback(new Error(`Origin ${origin} not allowed by CORS`));
+      return callback(null, false);
     },
     credentials: true,
   })
