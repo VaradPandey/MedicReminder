@@ -11,6 +11,8 @@ const app = express();
 
 const defaultOrigins = [
   "https://medicreminder.vercel.app",
+  "https://medicreminder-ml.onrender.com",
+  "https://medicreminder-backend.onrender.com",
   "https://medic-reminder-two.vercel.app",
   "http://localhost:5173",
   "http://127.0.0.1:5173",

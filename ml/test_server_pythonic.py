@@ -39,13 +39,13 @@ app = Flask(__name__)
 allowed_origins = [
     "https://medicreminder.vercel.app",
     "https://medicreminder-backend.onrender.com",
+    "https://medicreminder-ml.onrender.com",
     "https://medic-reminder-two.vercel.app",
-    "https://medicreminder-production-aaca.up.railway.app",
-    "https://medicreminder-production-0f69.up.railway.app",
     "http://localhost:5173",
     "http://localhost:3000",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:3000",
+    r"^https:\/\/.*medicreminder.*\.vercel\.app$",
 ]
 CORS(app, resources={r"/*": {"origins": allowed_origins}}, supports_credentials=True)
 
