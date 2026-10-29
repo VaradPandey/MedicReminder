@@ -110,8 +110,8 @@ export default function Landing() {
 
                   {/* Orbiting Capsule Satellites — carefully positioned away from viewBox edges */}
                   {/* 1. Top-Left: Morning Station */}
-                  <g transform="translate(50, 78)">
-                    <rect width="112" height="34" rx="17" fill="#ffffff" stroke="#fced9f" strokeWidth="1.5" />
+                  <g transform="translate(28, 78)">
+                    <rect width="134" height="34" rx="17" fill="#ffffff" stroke="#fced9f" strokeWidth="1.5" />
                     <circle cx="17" cy="17" r="8" fill="#fced9f" />
                     <text x="32" y="21" fill="#1d1f21" fontSize="11" fontWeight="600" fontFamily="'Inter', sans-serif">Morning · 8 AM</text>
                   </g>
@@ -124,8 +124,8 @@ export default function Landing() {
                   </g>
 
                   {/* 3. Bottom-Left: Evening Station */}
-                  <g transform="translate(50, 298)">
-                    <rect width="112" height="34" rx="17" fill="#ffffff" stroke="#c3aeff" strokeWidth="1.5" />
+                  <g transform="translate(28, 298)">
+                    <rect width="134" height="34" rx="17" fill="#ffffff" stroke="#c3aeff" strokeWidth="1.5" />
                     <circle cx="17" cy="17" r="8" fill="#c3aeff" />
                     <text x="32" y="21" fill="#1d1f21" fontSize="11" fontWeight="600" fontFamily="'Inter', sans-serif">Evening · 8 PM</text>
                   </g>
