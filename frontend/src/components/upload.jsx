@@ -11,7 +11,6 @@ import {
   Sparkles, 
   Calendar, 
   ShieldCheck, 
-  Eye, 
   Sun, 
   Building2, 
   Pill, 
@@ -444,54 +443,18 @@ export default function Upload({
               )}
             </div>
 
-            {/* High-Tech Optical Scanning Viewfinder HUD (Obsidian Matrix Grid) */}
+            {/* Clean Blue Progress Bar matching the light theme */}
             {isScanning && (
-              <div className="rounded-[12px] bg-scanner-grid p-6 text-white space-y-5 border border-white/10 shadow-xl relative overflow-hidden">
-                {/* Active Sweeping Laser Beam */}
-                <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00c978] to-transparent filter blur-xs animate-scan-laser pointer-events-none" />
-
-                <div className="flex items-center justify-between text-xs border-b border-white/10 pb-3">
-                  <span className="flex items-center gap-2.5 text-[#00c978] font-semibold">
-                    <Eye className="w-4 h-4 animate-spin" />
-                    <span>Scanning prescription image...</span>
-                  </span>
-                  <span className="font-mono text-white/70 bg-white/10 px-2 py-0.5 rounded text-[11px]">
-                    {scanProgress}% COMPLETE
-                  </span>
+              <div className="w-full space-y-2 py-3 px-1">
+                <div className="flex items-center justify-between text-xs font-semibold">
+                  <span className="text-[#244cff]">Scanning prescription...</span>
+                  <span className="text-[#878787] font-mono">{scanProgress}%</span>
                 </div>
-
-                {/* Progress Bar with Glowing Tip */}
-                <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-[#e8f8ff] rounded-full h-2.5 overflow-hidden border border-[#244cff]/15">
                   <div
-                    className="bg-gradient-to-r from-[#244cff] to-[#00c978] h-full transition-all duration-300"
+                    className="bg-[#244cff] h-full rounded-full transition-all duration-300 ease-out"
                     style={{ width: `${scanProgress}%` }}
                   />
-                </div>
-
-                {/* Telemetry Console */}
-                <div className="p-3.5 bg-black/50 rounded-[8px] font-mono text-[11px] text-white/80 space-y-1.5 border border-white/5">
-                  <div className="flex items-center gap-2 text-white/50">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00c978]" />
-                    <span>Preparing image for scanning...</span>
-                  </div>
-                  {scanProgress > 25 && (
-                    <div className="flex items-center gap-2 text-white/70">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#244cff]" />
-                      <span>Checking image clarity and contrast...</span>
-                    </div>
-                  )}
-                  {scanProgress > 55 && (
-                    <div className="flex items-center gap-2 text-white/90">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#fced9f]" />
-                      <span>Reading handwriting, doctor's notes, and medicine names...</span>
-                    </div>
-                  )}
-                  {scanProgress > 80 && (
-                    <div className="flex items-center gap-2 text-[#00c978]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#00c978]" />
-                      <span>Organizing dosages and timing schedule...</span>
-                    </div>
-                  )}
                 </div>
               </div>
             )}
@@ -638,7 +601,7 @@ export default function Upload({
                   <button
                     type="button"
                     onClick={() => {
-                      navigate("/schedule", { state: { prefill: scanResults } });
+                      navigate("/set-reminder", { state: { prefill: scanResults } });
                     }}
                     disabled={!isConfirmed}
                     className="btn-obsidian w-full sm:flex-1 disabled:opacity-50 interactive-pill"

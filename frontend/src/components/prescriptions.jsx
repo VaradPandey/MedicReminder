@@ -450,7 +450,7 @@ export default function Prescriptions({ extracted }) {
                         type="button"
                         onClick={() => {
                           const prefill = { medications: prescription.medications };
-                          navigate("/schedule", { state: { prefill } });
+                          navigate("/set-reminder", { state: { prefill } });
                         }}
                         className="btn-cobalt text-xs interactive-pill"
                         style={{ height: "34px", padding: "0 16px" }}

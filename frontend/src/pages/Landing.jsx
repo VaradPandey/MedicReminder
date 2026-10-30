@@ -214,7 +214,7 @@ export default function Landing() {
               <ul className="space-y-2 text-xs text-[#2b2b2b] pt-2">
                 <li className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#1d1f21]" />
-                  <span>Direct alerts via @MedicReminderBot</span>
+                  <span>Direct alerts via @RemindMyMedicineBot</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#1d1f21]" />

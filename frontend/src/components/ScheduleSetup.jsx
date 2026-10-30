@@ -832,12 +832,12 @@ export default function Scheduler({ extracted = null }) {
               <div>
                 <span className="text-[#878787] block">Open bot in Telegram:</span>
                 <a
-                  href="https://t.me/LifeAuraAiBot"
+                  href="http://t.me/RemindMyMedicineBot"
                   target="_blank"
                   rel="noreferrer"
                   className="text-[#244cff] font-semibold underline flex items-center gap-1 mt-0.5"
                 >
-                  <span>@MedicReminderBot</span>
+                  <span>@RemindMyMedicineBot</span>
                   <ArrowRight className="w-3 h-3" />
                 </a>
               </div>

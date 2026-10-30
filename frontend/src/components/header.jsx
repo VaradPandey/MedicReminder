@@ -53,6 +53,7 @@ export default function Header() {
     { name: "Scan Prescription", path: "/upload", auth: true },
     { name: "My Prescriptions", path: "/prescriptions", auth: true },
     { name: "Medication Schedule", path: "/schedule", auth: true },
+    { name: "Create Reminder", path: "/set-reminder", auth: true },
     { name: "Check Symptoms", path: "/prediction" },
   ];
 

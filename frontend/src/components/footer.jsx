@@ -69,6 +69,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/set-reminder" className="text-[#2b2b2b] hover:text-[#244cff] transition-colors flex items-center gap-1">
+                  <span>Create reminder</span>
+                </Link>
+              </li>
+              <li>
                 <Link to="/prediction" className="text-[#2b2b2b] hover:text-[#244cff] transition-colors flex items-center gap-1">
                   <span>Check symptoms</span>
                 </Link>
