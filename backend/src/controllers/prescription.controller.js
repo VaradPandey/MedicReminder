@@ -178,10 +178,21 @@ export const extractPrescription = async (req, res) => {
     if (!mlResponse.ok) {
       let errorDetail = "";
       try {
-        const errorJson = await mlResponse.json();
-        errorDetail = errorJson.error || errorJson.message || JSON.stringify(errorJson);
+        const errorText = await mlResponse.text();
+        try {
+          const errorJson = JSON.parse(errorText);
+          errorDetail = errorJson.error || errorJson.message || errorText;
+        } catch {
+          errorDetail = errorText;
+        }
       } catch {
-        errorDetail = await mlResponse.text();
+        errorDetail = `ML service returned HTTP ${mlResponse.status}`;
+      }
+
+      if (mlResponse.status === 429) {
+        errorDetail = "ML service is warming up or rate-limited on the free tier. Please wait 30–60 seconds and retry.";
+      } else if (mlResponse.status === 502 || mlResponse.status === 503) {
+        errorDetail = "ML service is currently waking up from cold sleep. Please wait a moment and try again.";
       }
       const sanitizedError = String(errorDetail).replace(/[\r\n]+/g, " ").substring(0, 200);
       console.error(`${getLogTimestamp()} ERROR [OCR][BACKEND] ML OCR service error request_id=${reqId} duration_ms=${durationMs} error='${sanitizedError}'`);
